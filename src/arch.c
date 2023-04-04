@@ -345,7 +345,7 @@ HIDDEN void init_perf()
 		//ioctl(cntd->perf_fd[i][PERF_CYCLES_REF], PERF_EVENT_IOC_RESET, 0);
 #endif
 
-		perf_open_roofline(&perf_pe, i, pid, hostname, world_rank);
+		//perf_open_roofline(&perf_pe, i, pid, hostname, world_rank);
 
 		for(j = 0; j < MAX_NUM_CUSTOM_PERF; j++)
 		{
@@ -353,6 +353,12 @@ HIDDEN void init_perf()
 			{
 				perf_pe.config = cntd->perf_fd[i][j];
 				perf_pe.type = PERF_TYPE_RAW;
+				// Read perf_event_attr config1 field
+				char perf_env[STRING_SIZE];
+                                snprintf(perf_env, sizeof(perf_env), "CNTD_PERF_CONFIG1_%d", j);
+                                char *cntd_perf_event = getenv(perf_env);
+                                if(cntd_perf_event != NULL && strcmp(cntd_perf_event,"0x0"))
+                                        perf_pe.config1 = strtoul(cntd_perf_event, 0L, 16);
 				cntd->perf_fd[i][j] = perf_event_open(&perf_pe, pid, -1, -1, 0);
 				if(cntd->perf_fd[i][j] == -1)
 				{
@@ -375,7 +381,7 @@ HIDDEN void init_perf()
 		ioctl(cntd->perf_fd[i][PERF_CYCLES_REF], PERF_EVENT_IOC_ENABLE, 0);
 #endif
 
-		perf_enable_roofline(i);
+		//perf_enable_roofline(i);
 
 		for(j = 0; j < MAX_NUM_CUSTOM_PERF; j++)
 		{
@@ -458,7 +464,7 @@ HIDDEN void perf_open_roofline(struct perf_event_attr *perf_pe, int i, int pid, 
 		int events_type[MAX_NUM_MEM_CHANNELS_PER_SOCKET] = {0xe, 0xf, 0x10, 0x11, 0x12, 0x13};
 		int j;
 		int k;
-		(*perf_pe) = (struct perf_event_attr){.size=0x78 /* PERF_ATTR_SIZE_??? */, .config=0xf04, .sample_period=0, .sample_type=PERF_SAMPLE_IDENTIFIER, .read_format=PERF_FORMAT_TOTAL_TIME_ENABLED|PERF_FORMAT_TOTAL_TIME_RUNNING, .disabled=1, .inherit=1, .pinned=0, .exclusive=0, .exclude_user=0, .exclude_kernel=0, .exclude_hv=0, .exclude_idle=0, .mmap=0, .comm=0, .freq=0, .inherit_stat=0, .enable_on_exec=0, .task=0, .watermark=0, .precise_ip=0 /* arbitrary skid */, .mmap_data=0, .sample_id_all=0, .exclude_host=0, .exclude_guest=0, .exclude_callchain_kernel=0, .exclude_callchain_user=0, .mmap2=0, .comm_exec=0, .use_clockid=0, .context_switch=0, .write_backward=0, .namespaces=0, .wakeup_events=0, .config1=0, .config2=0, .sample_regs_user=0, .sample_regs_intr=0, .aux_watermark=0, .sample_max_stack=0, .__reserved_2=0};
+		(*perf_pe) = (struct perf_event_attr){.size=0x78 /* PERF_ATTR_SIZE_??? */, .config=0xf04, .sample_period=0, .sample_type=PERF_SAMPLE_IDENTIFIER, .read_format=PERF_FORMAT_TOTAL_TIME_ENABLED|PERF_FORMAT_TOTAL_TIME_RUNNING, .disabled=1, .inherit=1, .pinned=0, .exclusive=0, .exclude_user=0, .exclude_kernel=0, .exclude_hv=0, .exclude_idle=0, .mmap=0, .comm=0, .freq=0, .inherit_stat=0, .enable_on_exec=0, .task=0, .watermark=0, .precise_ip=0 /* arbitrary skid */, .mmap_data=0, .sample_id_all=0, .exclude_host=0, .exclude_guest=0, .exclude_callchain_kernel=0, .exclude_callchain_user=0, .mmap2=0, .comm_exec=0, .wakeup_events=0, .config1=0, .config2=0, .sample_regs_user=0, .sample_regs_intr=0, .__reserved_2=0};
 		int t_k;
 		for (j = 0; j < cntd->node.num_sockets; j++) {
 			for (k = 0; k < MAX_NUM_MEM_CHANNELS_PER_SOCKET; k++) {
@@ -557,7 +563,7 @@ HIDDEN void finalize_perf()
 		ioctl(cntd->perf_fd[i][PERF_CYCLES_REF], PERF_EVENT_IOC_DISABLE, 0);
 #endif
 
-		perf_disable_roofline(i);
+		//perf_disable_roofline(i);
 
 		for(j = 0; j < MAX_NUM_CUSTOM_PERF; j++)
 		{
@@ -574,7 +580,7 @@ HIDDEN void finalize_perf()
 		close(cntd->perf_fd[i][PERF_CYCLES_REF]);
 #endif
 
-		perf_close_roofline(i);
+		//perf_close_roofline(i);
 
 		for(j = 0; j < MAX_NUM_CUSTOM_PERF; j++)
 		{

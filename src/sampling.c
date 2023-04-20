@@ -350,7 +350,7 @@ HIDDEN void time_sample(int sig, siginfo_t *siginfo, void *context)
 				read(cntd->perf_fd[i][PERF_CYCLES_REF], &perf[i][PERF_CYCLES_REF][flip], sizeof(perf[i][PERF_CYCLES_REF][flip]));
 #endif
 
-				time_sample_roofline(perf, i, flip);
+				//time_sample_roofline(perf, i, flip);
 
 				for(j = 0; j < MAX_NUM_CUSTOM_PERF; j++)
 					if(cntd->perf_fd[i][j] > 0)
@@ -426,7 +426,7 @@ HIDDEN void time_sample(int sig, siginfo_t *siginfo, void *context)
 				read(cntd->perf_fd[i][PERF_CYCLES_REF], &perf[i][PERF_CYCLES_REF][curr], sizeof(perf[i][PERF_CYCLES_REF][curr]));
 #endif
 
-				time_sample_roofline(perf, i, curr);
+				//time_sample_roofline(perf, i, curr);
 
 				for(j = 0; j < MAX_NUM_CUSTOM_PERF; j++)
 					if(cntd->perf_fd[i][j] > 0)
@@ -662,8 +662,10 @@ HIDDEN void finalize_time_sample()
 #ifdef NVIDIA_GPU
 		finalize_nvml();
 #endif
-		if(cntd->enable_perf)
+		if(cntd->enable_perf){
+			printf("About to close perf\n");
 			finalize_perf();
+		}
 	}
 
 	// Memory usage

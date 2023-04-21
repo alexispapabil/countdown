@@ -662,10 +662,8 @@ HIDDEN void finalize_time_sample()
 #ifdef NVIDIA_GPU
 		finalize_nvml();
 #endif
-		if(cntd->enable_perf){
-			printf("About to close perf\n");
+		if(cntd->enable_perf)
 			finalize_perf();
-		}
 	}
 
 	// Memory usage

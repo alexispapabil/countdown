@@ -354,11 +354,11 @@ HIDDEN void init_perf()
 				perf_pe.config = cntd->perf_fd[i][j];
 				perf_pe.type = PERF_TYPE_RAW;
 				// Read perf_event_attr config1 field
-				char perf_env[STRING_SIZE];
+				/*char perf_env[STRING_SIZE];
                                 snprintf(perf_env, sizeof(perf_env), "CNTD_PERF_CONFIG1_%d", j);
                                 char *cntd_perf_event = getenv(perf_env);
                                 if(cntd_perf_event != NULL && strcmp(cntd_perf_event,"0x0"))
-                                        perf_pe.config1 = strtoul(cntd_perf_event, 0L, 16);
+                                        perf_pe.config1 = strtoul(cntd_perf_event, 0L, 16);*/
 				cntd->perf_fd[i][j] = perf_event_open(&perf_pe, pid, -1, -1, 0);
 				if(cntd->perf_fd[i][j] == -1)
 				{
